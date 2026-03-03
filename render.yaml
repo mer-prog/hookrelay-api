@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: hookrelay-api
+    runtime: docker
+    region: singapore
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: GIN_MODE
+        value: release
