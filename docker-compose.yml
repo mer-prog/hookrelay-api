@@ -1,0 +1,33 @@
+services:
+  api:
+    build: .
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      - DATABASE_URL=postgres://hookrelay:hookrelay@db:5432/hookrelay?sslmode=disable
+      - JWT_SECRET=${JWT_SECRET:-dev-secret-change-me}
+      - PUBSUB_DRIVER=${PUBSUB_DRIVER:-memory}
+      - WORKER_POOL_SIZE=${WORKER_POOL_SIZE:-10}
+      - PORT=8080
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: hookrelay
+      POSTGRES_PASSWORD: hookrelay
+      POSTGRES_DB: hookrelay
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hookrelay"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
