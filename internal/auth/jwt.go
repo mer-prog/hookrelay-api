@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 const (
@@ -18,6 +19,12 @@ type Claims struct {
 	Email  string `json:"email"`
 	Role   string `json:"role"`
 	jwt.RegisteredClaims
+}
+
+// GetUserUUID parses the UserID field as a UUID.
+func (c *Claims) GetUserUUID() uuid.UUID {
+	id, _ := uuid.Parse(c.UserID)
+	return id
 }
 
 // GenerateAccessToken creates a signed JWT valid for 15 minutes.
