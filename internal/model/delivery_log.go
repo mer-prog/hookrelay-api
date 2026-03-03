@@ -28,12 +28,12 @@ type DeliveryLog struct {
 
 func CreateDeliveryLog(ctx context.Context, pool *pgxpool.Pool, d *DeliveryLog) error {
 	query := `
-		INSERT INTO delivery_logs (event_id, endpoint_id, status, attempt_number, request_headers, next_retry_at)
-		VALUES ($1, $2, $3, $4, $5, $6)
+		INSERT INTO delivery_logs (event_id, endpoint_id, status, attempt_number, request_headers, latency_ms, next_retry_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
 		RETURNING id, created_at`
 
 	err := pool.QueryRow(ctx, query,
-		d.EventID, d.EndpointID, d.Status, d.AttemptNumber, d.RequestHeaders, d.NextRetryAt,
+		d.EventID, d.EndpointID, d.Status, d.AttemptNumber, d.RequestHeaders, d.LatencyMs, d.NextRetryAt,
 	).Scan(&d.ID, &d.CreatedAt)
 	if err != nil {
 		return fmt.Errorf("CreateDeliveryLog: %w", err)
