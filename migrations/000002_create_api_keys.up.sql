@@ -1,0 +1,10 @@
+CREATE TABLE api_keys (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    key_hash TEXT NOT NULL,
+    name TEXT NOT NULL,
+    scopes TEXT[],
+    is_revoked BOOLEAN NOT NULL DEFAULT false,
+    last_used_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
